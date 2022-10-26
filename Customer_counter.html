@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellcome to DIU Cafa</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="form">
+       
+        <input type="text" id="name" placeholder="Customer name" style = "Width: 50%;">
+    <div id="product">
+        
+       
+    </div>
+    <div class="buttons">
+        <button onclick="AddProduct()">Add Product</button>
+        <button onclick="SaveCustomer()">Save</button>
+    </div>
+  
+</div>
+<div class="details">
+    <table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Products</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+   <tbody id="tbl">
+
+   </tbody>
+
+   <tfoot>
+    <tr>
+    <td></td>
+      <td></td>
+      <td id="total"></td>
+    </tr>
+  </tfoot>
+   
+    </table>
+</div>
+
+    <script>
+        class Product{
+            constructor(name,price){
+                this.name = name;
+                this.price = price;
+            }
+            get details(){
+                return name+",price: "+price.toString()
+            }
+        }
+        class Customer{
+            constructor(name,products){
+                this.name = name;
+                this.products = products;
+            }
+            get price(){
+                let y=0;
+                for(let x in this.products)
+                {
+                    y+= parseInt( this.products[x].price);
+                }
+               
+                return y;
+            }
+            get product_name(){
+                let names = "";
+                for(let x in this.products){
+                    names+=this.products[x].name;
+                    if(x!=this.products.length-1){
+                        names+=", ";
+                    }
+                    
+                }
+                return names;
+            }
+           
+        }
+
+        var total_product=0
+       var temp_product_array = [];
+       var customers_array = [];
+    
+        function AddProduct(){
+            total_product+=1;
+            var product = document.getElementById("product");
+            var d = document.createElement("DIV");
+            var x = document.createElement("INPUT");
+            var price = document.createElement("INPUT");
+
+            d.setAttribute("class","item")
+            
+            x.setAttribute("type","text");
+            x.setAttribute("id","P_I"+total_product.toString());
+            x.setAttribute("placeholder","Product No :"+total_product.toString());
+            
+            price.setAttribute("type","number")
+            price.setAttribute("id","P_Price_no"+total_product.toString());
+            price.setAttribute("placeholder","Price");
+
+
+            d.appendChild(x);
+            d.appendChild(price);
+            product.appendChild(d);
+            if(total_product>1){
+            var name = document.getElementById("P_I"+(total_product-1).toString()).value;
+            var price = document.getElementById("P_Price_no"+(total_product-1).toString()).value;
+            temp_product_array.push(new Product(name,price));
+            
+            }
+            
+        }
+        function updateList(customer){
+           var t = document.getElementById("tbl");
+            var tr = document.createElement("TR");
+            var nm = document.createElement("TD");
+           var products = document.createElement("TD");
+           var price= document.createElement("TD");
+            nm.appendChild(document.createTextNode(customer.name));
+            products.appendChild(document.createTextNode(customer.product_name));
+            price.appendChild(document.createTextNode(customer.price));
+            tr.appendChild(nm);
+            tr.appendChild(products);
+            tr.appendChild(price);
+            t.appendChild(tr);
+
+        }
+        function total(list){
+            let y=0;
+            for(let x in list){
+                y+=list[x].price;
+            }
+            return y;
+
+        }
+        function SaveCustomer(){
+            var name = document.getElementById("P_I"+(total_product).toString()).value;
+            var price = document.getElementById("P_Price_no"+(total_product).toString()).value;
+            if(name!="" && price!=""){
+                temp_product_array.push(new Product(name,price));
+            }
+            
+
+
+            var name = document.getElementById("name").value;
+            var customer = new Customer(name,temp_product_array);
+            updateList(customer);
+            customers_array.push(customer);
+            temp_product_array=[];
+            console.log(customers_array);
+            product = document.getElementById("product");
+            while (product.hasChildNodes()) {
+                product.removeChild(product.firstChild);
+            }
+            total_product = 0;
+            document.getElementById("name").value="";
+            console.log(total(customers_array));
+            document.getElementById("total").innerHTML="Total Sell = " + total(customers_array).toString()+" Tk" ;
+        }
+
+    </script>
+</body>
+</html>
